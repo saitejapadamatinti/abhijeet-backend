@@ -1,6 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const BlogData = require("./model");
+const userEmails = require("./email")
+const Resume = require("./resume")
 const cors = require("cors");
 
 const app = express();
@@ -36,7 +38,7 @@ app.post("/addProject", async (req, res) => {
       blogContent: blogContent,
       blogDate: blogDate,
       likes: likes,
-      blogLongDescription : blogLongDescription,
+      blogLongDescription: blogLongDescription,
     });
     await newData.save();
     return res.json(await BlogData.find());
@@ -44,6 +46,8 @@ app.post("/addProject", async (req, res) => {
     console.log(err.message);
   }
 });
+
+
 
 app.put("/updateProject", async (req, res) => {
   const updatingData = ({
@@ -100,5 +104,67 @@ app.delete("/deleteProject/:id", async (req, res) => {
     console.log(error);
   }
 });
+
+app.post("/subscribedEmails", async (req, res) => {
+  const {
+    userEmail,
+    date,
+  } = req.body;
+  try {
+    const newData = new userEmails({
+      userEmail: userEmail,
+      date: date,
+    });
+    await newData.save();
+    return res.json(await userEmails.find());
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
+app.get("/subscribedEmails", async (req, res) => {
+  try {
+    const allEmails = await userEmails.find();
+    return res.send(allEmails);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// resume backend
+app.post("/resume", async (req, res) => {
+  const {
+    resume,
+  } = req.body;
+  try {
+    const newData = new Resume({
+      resume: resume,
+    });
+    await newData.save();
+    return res.json(await Resume.find());
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
+app.get("/resume", async (req, res) => {
+  try {
+    const allResumes = await Resume.find();
+    return res.send(allResumes);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.delete("/resume/:id", async (req, res) => {
+  try {
+    await Resume.findByIdAndDelete(req.params.id);
+    return res.json(await Resume.find());
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
 
 app.listen(3005, () => console.log("surver runnig"));
