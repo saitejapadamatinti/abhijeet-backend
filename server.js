@@ -24,11 +24,11 @@ mongoose
 
 app.post("/addProject", async (req, res) => {
   const {
-    blogImage,
     bloghead,
+    blogImage,
     blogContent,
     blogDate,
-    likes,
+    readTime,
     blogLongDescription
   } = req.body;
   try {
@@ -37,7 +37,7 @@ app.post("/addProject", async (req, res) => {
       bloghead: bloghead,
       blogContent: blogContent,
       blogDate: blogDate,
-      likes: likes,
+      readTime: readTime,
       blogLongDescription: blogLongDescription,
     });
     await newData.save();
@@ -52,13 +52,12 @@ app.post("/addProject", async (req, res) => {
 app.put("/updateProject", async (req, res) => {
   const updatingData = ({
     _id,
-    projectName,
-    projectType,
-    displayImage,
-    descrption,
-    usedTechnologies,
-    LiveUrl,
-    gitHubUrl,
+    blogImage,
+    bloghead,
+    blogContent,
+    blogDate,
+    readTime,
+    blogLongDescription
   } = req.body);
   try {
     // const newData = new BlogData({
@@ -78,7 +77,7 @@ app.put("/updateProject", async (req, res) => {
   }
 });
 
-app.get("/allProjects", async (req, res) => {
+app.get("/allBlogs", async (req, res) => {
   try {
     const allProjects = await BlogData.find();
     return res.send(allProjects);
@@ -87,7 +86,7 @@ app.get("/allProjects", async (req, res) => {
   }
 });
 
-app.get("/allProjects/:id", async (req, res) => {
+app.get("/allBlogs/:id", async (req, res) => {
   try {
     const project = await BlogData.findById(req.params.id);
     return res.send(project);
@@ -131,21 +130,30 @@ app.get("/subscribedEmails", async (req, res) => {
   }
 });
 
-// resume backend
-app.post("/resume", async (req, res) => {
-  const {
-    resume,
-  } = req.body;
+app.delete("/subscribedEmails/:id", async (req, res) => {
   try {
-    const newData = new Resume({
-      resume: resume,
-    });
-    await newData.save();
-    return res.json(await Resume.find());
-  } catch (err) {
-    console.log(err.message);
+    await userEmails.findByIdAndDelete(req.params.id);
+    return res.json(await userEmails.find());
+  } catch (error) {
+    console.log(error);
   }
 });
+
+// resume backend
+// app.post("/resume", async (req, res) => {
+//   const {
+//     resume,
+//   } = req.body;
+//   try {
+//     const newData = new Resume({
+//       resume: resume,
+//     });
+//     await newData.save();
+//     return res.json(await Resume.find());
+//   } catch (err) {
+//     console.log(err.message);
+//   }
+// });
 
 app.get("/resume", async (req, res) => {
   try {
@@ -156,9 +164,23 @@ app.get("/resume", async (req, res) => {
   }
 });
 
-app.delete("/resume/:id", async (req, res) => {
+// app.delete("/resume/:id", async (req, res) => {
+//   try {
+//     await Resume.findByIdAndDelete(req.params.id);
+//     return res.json(await Resume.find());
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
+
+app.put("/resume", async (req, res) => {
+  const updatingData = ({
+    _id,
+    resume,
+  } = req.body);
   try {
-    await Resume.findByIdAndDelete(req.params.id);
+    const oldResume = await Resume.findById(_id);
+    await Resume.replaceOne(oldResume, updatingData);
     return res.json(await Resume.find());
   } catch (error) {
     console.log(error);

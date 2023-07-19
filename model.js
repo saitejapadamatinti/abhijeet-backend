@@ -17,7 +17,7 @@ const BlogData = mongoose.Schema({
     type: "string",
     required: true,
   },
-  likes: {
+  readTime: {
     type: "string",
     required: true,
   },
