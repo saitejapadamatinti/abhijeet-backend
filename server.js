@@ -1,9 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const BlogData = require("./model");
-const userEmails = require("./email")
-const Resume = require("./resume")
+const userEmails = require("./email");
+const Resume = require("./resume");
 const cors = require("cors");
+const UserContact = require("./userContact");
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.post("/addProject", async (req, res) => {
     blogContent,
     blogDate,
     readTime,
-    blogLongDescription
+    blogLongDescription,
   } = req.body;
   try {
     const newData = new BlogData({
@@ -47,8 +48,6 @@ app.post("/addProject", async (req, res) => {
   }
 });
 
-
-
 app.put("/updateProject", async (req, res) => {
   const updatingData = ({
     _id,
@@ -57,7 +56,7 @@ app.put("/updateProject", async (req, res) => {
     blogContent,
     blogDate,
     readTime,
-    blogLongDescription
+    blogLongDescription,
   } = req.body);
   try {
     // const newData = new BlogData({
@@ -105,10 +104,7 @@ app.delete("/deleteProject/:id", async (req, res) => {
 });
 
 app.post("/subscribedEmails", async (req, res) => {
-  const {
-    userEmail,
-    date,
-  } = req.body;
+  const { userEmail, date } = req.body;
   try {
     const newData = new userEmails({
       userEmail: userEmail,
@@ -174,10 +170,7 @@ app.get("/resume", async (req, res) => {
 // });
 
 app.put("/resume", async (req, res) => {
-  const updatingData = ({
-    _id,
-    resume,
-  } = req.body);
+  const updatingData = ({ _id, resume } = req.body);
   try {
     const oldResume = await Resume.findById(_id);
     await Resume.replaceOne(oldResume, updatingData);
@@ -187,6 +180,41 @@ app.put("/resume", async (req, res) => {
   }
 });
 
+// user contact details
 
+app.post("/userContact", async (req, res) => {
+  const { firstname, lastname, mobile, email, message } = req.body;
+  try {
+    const newData = new UserContact({
+      firstname: firstname,
+      lastname: lastname,
+      mobile: mobile,
+      email: email,
+      message: message,
+    });
+    await newData.save();
+    return res.json(await UserContact.find());
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
+app.get("/userContact", async (req, res) => {
+  try {
+    const userContactData = await UserContact.find();
+    return res.send(userContactData);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.delete("/userContact/:id", async (req, res) => {
+  try {
+    await UserContact.findByIdAndDelete(req.params.id);
+    return res.json(await UserContact.find());
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 app.listen(3005, () => console.log("surver runnig"));
