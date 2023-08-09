@@ -182,7 +182,7 @@ app.put("/resume", async (req, res) => {
 
 // user contact details
 
-app.post("/userContact", async (req, res) => {
+app.post("/usercontact", async (req, res) => {
   const { firstname, lastname, mobile, email, message } = req.body;
   try {
     const newData = new UserContact({
@@ -199,7 +199,7 @@ app.post("/userContact", async (req, res) => {
   }
 });
 
-app.get("/userContact", async (req, res) => {
+app.get("/usercontact", async (req, res) => {
   try {
     const userContactData = await UserContact.find();
     return res.send(userContactData);
@@ -208,7 +208,7 @@ app.get("/userContact", async (req, res) => {
   }
 });
 
-app.delete("/userContact/:id", async (req, res) => {
+app.delete("/usercontact/:id", async (req, res) => {
   try {
     await UserContact.findByIdAndDelete(req.params.id);
     return res.json(await UserContact.find());
