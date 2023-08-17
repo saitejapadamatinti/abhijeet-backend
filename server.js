@@ -17,7 +17,7 @@ app.use(
 
 mongoose
   .connect(
-    "mongodb+srv://abhi030609:abhi030609@abhijeet.tcvsgwy.mongodb.net/?retryWrites=true&w=majority",
+    "mongodb+srv://abhi030609:abhi030609@portfolio.l400wxb.mongodb.net/?retryWrites=true&w=majority",
     { useUnifiedTopology: true, useNewUrlParser: true }
   )
   .then(() => console.log("db is connected"))
